@@ -1,5 +1,5 @@
 # ATProto Label Indexer
-It uses MongoDB to store these labels. These labels could get queried for another service. Also used by the label driven feed generator. (which isn't open source. oops.)
+It uses MongoDB to store these labels. These labels could get queried from another service, such as a [label driven feed generator](https://github.com/BunnyNabbit/label-driven-feed-generator).
 ## Setup
 Install dependencies with `npm i`.
 
