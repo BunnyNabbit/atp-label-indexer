@@ -15,7 +15,7 @@ let isLoggedIn = false
 let postQueue = null
 if (config.useDivertQueue) {
 	const PostQueue = require("./PostQueue.cjs")
-	const agenzHandle = config.agenzHandle
+	const agenzHandle = config.agentHandle
 	const password = config.agentPassword
 	const agent = new BskyAgent({ service: "https://bsky.social" })
 	agent.login({ identifier: agenzHandle, password }).then(async result => {
