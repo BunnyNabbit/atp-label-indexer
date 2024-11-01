@@ -1,6 +1,5 @@
-const config = require("./config.json")
 const mongojs = require("mongojs")
-const db = mongojs(config.databaseName)
+const db = mongojs("bsnetworkcache")
 const labelCollection = db.collection('labels')
 const cursorCollection = db.collection("labelCursors")
 const handleDidCollection = db.collection("resolveDid")
@@ -31,7 +30,7 @@ function getCursor(did) {
 }
 function updateCursor(did, cursor) {
 	return new Promise((resolve, reject) => {
-		cursorCollection.update({ _id: did }, { $set: { cursor } }, function () {
+		cursorCollection.update({ _id: did }, { $set: { cursor } }, { upsert: true }, function (err) {
 			resolve()
 		})
 	})
