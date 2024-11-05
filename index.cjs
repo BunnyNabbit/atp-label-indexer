@@ -3,7 +3,7 @@ const { Subscription } = require("@atproto/xrpc-server")
 const { verifySignature } = require("@atproto/crypto")
 const { cborEncode } = require("@atproto/common")
 const { BskyAgent } = require("@atproto/api")
-const db = require("./db.cjs")
+const Database = require("./Database.cjs")
 function sleep(ms) {
 	return new Promise((resolve) => {
 		setTimeout(resolve, ms)
@@ -27,23 +27,6 @@ function isCommit(v) {
 	)
 }
 
-function resolveHandleToDID(handle) {
-	return new Promise(async (resolve, reject) => {
-		const cacheDocument = await db.getHandleDIDCache(handle)
-		if (cacheDocument) return resolve(cacheDocument.did)
-		for (let i = 0; i < 10; i++) {
-			const did = await hdlres.resolve(handle)
-			if (did) {
-				await db.addHandleDIDCache(handle, did)
-				resolve(did)
-				return
-			}
-			await sleep(1000)
-		}
-		reject("Failed to resolve handle")
-	})
-}
-
 
 const EventEmitter = require("events")
 class LabelIndexer extends EventEmitter {
@@ -63,6 +46,7 @@ class LabelIndexer extends EventEmitter {
 			})
 			this.postQueue = new PostQueue(agent)
 		}
+		this.db = new Database(config.databaseName ?? "bsnetworkcache")
 	}
 
 	async runIngester(handle) {
@@ -79,7 +63,7 @@ class LabelIndexer extends EventEmitter {
 					}
 					if (isCommit(ev) && (ev.seq % zhat.config.cursorUpdate) == 0) {
 						labelCursor = ev.seq
-						await db.updateCursor(did, labelCursor)
+						await zhat.db.updateCursor(did, labelCursor)
 					}
 				}
 			} catch (error) {
@@ -116,14 +100,14 @@ class LabelIndexer extends EventEmitter {
 					const serviceMatchesUp = label.src === did
 					if (isValid && serviceMatchesUp) {
 						if (!label.neg) {
-							await db.replaceLabel(rest)
+							await zhat.db.replaceLabel(rest)
 							if (label.src == zhat.config.serviceDivertDID && uriIsPost(label.uri)) { // moderation.bsky.app
 								if (zhat.config.divertLabelNames.includes(label.val) && zhat.isLoggedIn) {
 									zhat.postQueue.enqueue(label.uri)
 								}
 							}
 						} else {
-							await db.deleteLabel(did, label.uri, label.val)
+							await zhat.db.deleteLabel(did, label.uri, label.val)
 						}
 						zhat.emit("label", label)
 					} else {
@@ -134,7 +118,7 @@ class LabelIndexer extends EventEmitter {
 		}
 
 
-		let did = await resolveHandleToDID(handle).catch(err => {
+		let did = await this.resolveHandleToDID(handle).catch(err => {
 			console.log("Failed to resolve handle of", handle)
 		})
 
@@ -177,7 +161,7 @@ class LabelIndexer extends EventEmitter {
 			method: 'com.atproto.label.subscribeLabels',
 			getState: () => ({}),
 			getParams: async () => {
-				labelCursor = await db.getCursor(did)
+				labelCursor = await this.db.getCursor(did)
 				return { cursor: labelCursor }
 			},
 			requestOptions: {
@@ -188,6 +172,23 @@ class LabelIndexer extends EventEmitter {
 			validate: (val) => val,
 		})
 		run(labelSubscription)
+	}
+
+	resolveHandleToDID(handle) {
+		return new Promise(async (resolve, reject) => {
+			const cacheDocument = await this.db.getHandleDIDCache(handle)
+			if (cacheDocument) return resolve(cacheDocument.did)
+			for (let i = 0; i < 10; i++) {
+				const did = await hdlres.resolve(handle)
+				if (did) {
+					await this.db.addHandleDIDCache(handle, did)
+					resolve(did)
+					return
+				}
+				await sleep(1000)
+			}
+			reject("Failed to resolve handle")
+		})
 	}
 }
 
