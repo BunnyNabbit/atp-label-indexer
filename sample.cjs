@@ -14,16 +14,13 @@ const indexer = new Indexer({
    ],
    "userAgent": "Label Indexer",
    "databaseName": "bsnetworkcache"
-});
-const labelerHandles = ["nunnybabbit.bsky.social"]
-// const labelerHandles = ["moderation.bsky.app"]
+})
+const labelerHandles = ["moderation.bsky.app"]
 labelerHandles.forEach((labeler, index) => {
    setTimeout(() => {
-      try {
-         indexer.runIngester(labeler)
-      } catch (error) {
-         console.log("failed to run on", labeler, error)
-      }
+      indexer.runIngester(labeler).catch(err => {
+         console.error("failed to run on", labeler, err)
+      })
    }, 100 * index)
 })
 indexer.on("label", (label) => {

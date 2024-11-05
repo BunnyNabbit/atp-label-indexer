@@ -108,29 +108,27 @@ class LabelIndexer extends EventEmitter {
 						return true
 					}
 					// bsky ingestor doesn't seem to care? often has problems wizh non-ozone instances.
-					const sigPromise = verifySignature(
+					const isValid = await verifySignature(
 						signingKey,
 						encodedLabel,
 						sig,
-					).then(async isValid => {
-						const serviceMatchesUp = label.src === did
-						if (isValid && serviceMatchesUp) {
-							if (!label.neg) {
-								await db.replaceLabel(rest)
-								if (label.src == zhat.config.serviceDivertDID && uriIsPost(label.uri)) { // moderation.bsky.app
-									if (zhat.config.divertLabelNames.includes(label.val) && zhat.isLoggedIn) {
-										zhat.postQueue.enqueue(label.uri)
-									}
+					)
+					const serviceMatchesUp = label.src === did
+					if (isValid && serviceMatchesUp) {
+						if (!label.neg) {
+							await db.replaceLabel(rest)
+							if (label.src == zhat.config.serviceDivertDID && uriIsPost(label.uri)) { // moderation.bsky.app
+								if (zhat.config.divertLabelNames.includes(label.val) && zhat.isLoggedIn) {
+									zhat.postQueue.enqueue(label.uri)
 								}
-							} else {
-								await db.deleteLabel(did, label.uri, label.val)
 							}
-							zhat.emit("label", label)
 						} else {
-							// console.log("uh oh. we're getting invalid stuff", { handle, isValid, serviceMatchesUp, label, signingKey, sig, ev })
+							await db.deleteLabel(did, label.uri, label.val)
 						}
-					})
-					await Promise.allSettled([sigPromise])
+						zhat.emit("label", label)
+					} else {
+						// console.log("uh oh. we're getting invalid stuff", { handle, isValid, serviceMatchesUp, label, signingKey, sig, ev })
+					}
 				}
 			}
 		}
