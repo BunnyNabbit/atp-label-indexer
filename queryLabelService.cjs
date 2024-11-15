@@ -103,7 +103,6 @@ app.post('/querylabels/', async (req, res) => {
 			})
 		})
 		outputDocument.count = 0
-		console.log(searchDocument)
 		documents = await documents
 		res.json(outputDocument)
 	} catch (error) {
