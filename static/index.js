@@ -71,23 +71,9 @@ class ZhatList {
 			searchMiniDocument.cursorDirection = cursorDirection
 			searchMiniDocument.cursor = cursor
 		}
-		// if (goToEnd) {
-		// 	queryLabels(searchMiniDocument).then(response => {
-		// 		response.json().then(response => {
-		// 			this.entriesCount = response.count
-		// 			this.cursor = Math.max(0, this.entriesCount - 20)
-		// 			this.fetchData()
-		// 		})
-		// 	})
-		// 	return
-		// }
-		// searchMiniDocument.skip = this.cursor
 		queryLabels(searchMiniDocument).then(response => {
 			response.json().then(response => {
 				this.populate(response.data)
-				// originally, i wanted to show the entries and some sort of indicator of which entries you're in. but mongodb really doesn't like the skip-limit method of pagination, so cursors have to do.
-				// this.entriesCount = response.count
-				// this.feedback.innerText = `${this.entriesCount} entries`
 				this.feedback.innerText = ``
 				this.nextCursor = response.nextCursor
 				this.previousCursor = response.previousCursor
@@ -124,17 +110,6 @@ class ZhatList {
 			const buttonElement = document.createElement("button")
 			buttonElement.innerText = text
 			buttonElement.onclick = () => { // what happens next isnt funny
-				// let nextValue = this.cursor + changeNumber
-				// let alteredValue = Math.max(0, Math.min(nextValue, this.entriesCount))
-				// this.toggleButtonsEnabled(true, [true, true])
-				// if (alteredValue == this.entriesCount) {
-				// 	alteredValue = Math.max(0, this.entriesCount - 20)
-				// 	this.toggleButtonsEnabled(false, [true, false])
-				// }
-				// if (alteredValue == 0) {
-				// 	this.toggleButtonsEnabled(false, [false, true])
-				// }
-				// this.cursor = alteredValue
 				const cursorDirection = buttonData[2]
 				let cursor
 				if (cursorDirection == "lt") {
@@ -154,12 +129,6 @@ class ZhatList {
 			this.buttons[index].disabled = set
 		})
 	}
-	// toggleButtonsEnabled(enabled, buttonIndex = this.buttons.map(v => true)) {
-	// 	if (buttonIndex == false) buttonIndex = this.buttons.map(v => false)
-	// 	buttonIndex.forEach((set, index) => {
-	// 		if (set) this.buttons[index].disabled = !enabled
-	// 	})
-	// }
 	populate(data) {
 		this.currentData = data
 		this.tableBody.innerText = ""

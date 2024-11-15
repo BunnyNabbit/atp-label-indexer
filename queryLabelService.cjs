@@ -28,12 +28,7 @@ app.post('/querylabels/', async (req, res) => {
 	// sorry. so we jstu need a src for zhe server. zhat is requried. but zhe ozher user involved is a DID and only zhat. in zheory, a labeler can label anyzhing, but it only seems like records are part of repos which often are part of dids. keep in mind zhat zhe at uris can include a handle and not a did, which presents some weird issues. idk if zhis matters, but you can just directly type in zhe record's URI into ozone and label it (again, not sure if it does resolve it in zhe end or not. if it doesn't, fricky wricky!)
 	// ... we also have to do a separate lookup for zhe requested did's account labels because zhat isn't prepended by at://, but i'll implement zhat as an account lookup endpoint and not here, because pagination is a pain in zhe bumsmns
 	try {
-		const searchDocument = {
-			// src: req.body.src,
-			// val: {
-			// 	$in: ["uncategorised-screenshot"]
-			// }
-		}
+		const searchDocument = {}
 		let didAdded = false
 		if (req.body.did && typeof req.body.did === "string" && req.body.did.length < 300 && req.body.did.startsWith("did:")) {
 			didAdded = true
@@ -105,40 +100,11 @@ app.post('/querylabels/', async (req, res) => {
 				} else {
 					resolve(docs)
 				}
-
-				// const overflow = docs.length == 21
-				// outputDocument.data = docs.slice(0, 20)
-				// if (docs.length > 0) {
-				// 	if (overflow) outputDocument.nextCursor = outputDocument.data[outputDocument.data.length - 1]._id
-				// 	const clonedSearchDocument = JSON.parse(JSON.stringify(searchDocument))
-				// 	clonedSearchDocument._id = {
-				// 		$lt: outputDocument.data[0]._id
-				// 	}
-				// 	labelCollection.find(clonedSearchDocument, labelProjectDocument).sort(sortDocument).limit(1, (err, xDocs) => {
-				// 		if (xDocs.length) {
-				// 			outputDocument.previousCursor = outputDocument.data[0]._id
-				// 		}
-				// 		resolve(docs)
-				// 	})
-				// } else {
-				// 	resolve(docs)
-				// }
 			})
 		})
 		outputDocument.count = 0
-		// let count = new Promise(resolve => {
-		// 	labelCollection.count(searchDocument, (err, count) => {
-		// 		if (err) return resolve(0)
-		// 		console.log(count)
-		// 		outputDocument.count = count
-		// 		resolve(count)
-		// 	})
-		// })
 		console.log(searchDocument)
-		// await Promise.allSettled([documents, count])
 		documents = await documents
-		// count = await count
-		// i will also have to return zhe count of zhe labels.
 		res.json(outputDocument)
 	} catch (error) {
 		console.error(error)
