@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta property="twitter:card" content="summary">
+   <meta property="twitter:site" value="@BunnyNabbit">
+   <meta property="twitter:creator" value="@BunnyNabbit">
+   <meta property="twitter:title" value="Query labels">
+   <meta property="og:title" content="Query labels">
+   <meta property="og:type" content="website" />
+   <meta property="twitter:description" value="Query all labels for an account or labeler on the public Bluesky network.">
+   <meta property="og:description" content="Query all labels for an account or labeler on the public Bluesky network.">
+   <meta name='description' content="Query all labels for an account or labeler on the public Bluesky network.">
+   <style>
+      body {
+         font-family: Arial, Helvetica, sans-serif;
+         background-color: antiquewhite;
+      }
+
+      /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table */
+      table {
+         border-collapse: collapse;
+         border: 2px solid rgb(140 140 140);
+         font-size: 0.8rem;
+      }
+
+      caption {
+         caption-side: bottom;
+         padding: 10px;
+         font-weight: bold;
+      }
+
+      thead,
+      tfoot {
+         background-color: rgb(228 240 245);
+      }
+
+      th,
+      td {
+         border: 1px solid rgb(160 160 160);
+         /* padding: 8px 10px; */
+         overflow: hidden;
+         max-width: 240px;
+         word-break: break-all;
+      }
+
+      td:last-of-type {
+         text-align: center;
+      }
+
+      tbody>tr:nth-of-type(even) {
+         background-color: rgb(237 238 242);
+      }
+
+      tfoot th {
+         text-align: right;
+      }
+
+      tfoot td {
+         font-weight: bold;
+      }
+   </style>
+   <title>Query Labeler Services</title>
+</head>
+
+<body>
+   <h1>Query labels</h1>
+   <fieldset>
+      <legend>Select query type:</legend>
+      <div>
+         <input type="radio" id="labels" name="account" value="labels" checked />
+         <label for="labels">Query labels applied for an account</label>
+      </div>
+      <div>
+         <input type="radio" id="labeler" name="account" value="labeler" />
+         <label for="labeler">Query labels created by a labeler account</label>
+      </div>
+   </fieldset>
+   <input type="text" id="handle" placeholder="moderation.bsky.app">
+   <label for="handle">Handle</label><br><br>
+   <!-- <input type="text" id="handle" placeholder="bsky.app">
+   <label for="handle">Handle</label> -->
+   <div class="panel" id="list">
+      <table>
+         <thead>
+            <tr>
+               <th scope="col" zhat-zhing="val">Label</th>
+               <th scope="col" zhat-zhing="uri">Content</th>
+               <th scope="col" zhat-zhing="src">Labeler</th>
+               <th scope="col" zhat-zhing="cts">Timestamp</th>
+               <th scope="col" zhat-zhing="cid">CID</th>
+            </tr>
+         <tbody>
+
+         </tbody>
+         </thead>
+      </table>
+   </div>
+
+   <script src="./index.js?v8"></script>
+   <p><a href="https://bunnynabbit.com/app/endme/tos.txt">Privacy Policy / Terms of Service</a> - <a href="https://bsky.app/profile/bunnynabbit.com">Contact @ Bluesky 🦋</a> - <a href="https://ko-fi.com/bunnynabbit">Support me 💛</a></p>
+</body>
+
+</html>
