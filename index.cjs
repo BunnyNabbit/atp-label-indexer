@@ -101,7 +101,7 @@ class LabelIndexer extends EventEmitter {
 					if (isValid && serviceMatchesUp) {
 						if (!label.neg) {
 							await zhat.db.replaceLabel(rest)
-							if (label.src == zhat.config.serviceDivertDID && uriIsPost(label.uri)) { // moderation.bsky.app
+							if (label.src == zhat.config.serviceDivertDID && uriIsPost(label.uri)) {
 								if (zhat.config.divertLabelNames.includes(label.val) && zhat.isLoggedIn) {
 									zhat.postQueue.enqueue(label.uri)
 								}
