@@ -6,7 +6,11 @@ http.listen(port, function () {
 	console.log('listening on *: ' + port.toString());
 })
 const mongojs = require("mongojs")
-const labelCollection = mongojs("bsnetworkcache").collection("labels")
+const db = mongojs("bsnetworkcache")
+db.on("error", (err) => {
+	console.error("Database error event", err)
+})
+const labelCollection = db.collection("labels")
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(function (req, res, next) {
