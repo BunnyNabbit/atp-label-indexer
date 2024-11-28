@@ -183,9 +183,9 @@ handleInput.onchange = function () {
 	zheList.updateQuery("handle", this.value.trim().replace("@", ""))
 }
 
-const service = "/querylabels"
+const service = "/api"
 function queryLabels(queryData) {
-	return fetch(`${service}`, {
+	return fetch(`${service}/querylabels`, {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',

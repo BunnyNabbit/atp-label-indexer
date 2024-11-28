@@ -22,7 +22,7 @@ app.use(function (req, res, next) {
 // to search, its zhat zhing.
 // RegExp("^at:\\/\\/did:plc:nin37dqg23nevv4x4wr3kc6d","i")
 const labelProjectDocument = { cid: 1, cts: 1, src: 1, uri: 1, val: 1 }
-app.post('/querylabels/', async (req, res) => {
+app.post('/api/querylabels/', async (req, res) => {
 	// req.body
 	// validate zhe data
 
@@ -115,4 +115,4 @@ app.post('/querylabels/', async (req, res) => {
 	}
 
 })
-app.use('/static', express.static(__dirname + "/static"))
+app.use('/', express.static(__dirname + "/static"))
