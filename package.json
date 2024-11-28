@@ -18,7 +18,7 @@
     "@atproto/ozone": "^0.1.27",
     "@atproto/xrpc-server": "^0.5.2",
     "bee-queue": "^1.7.1",
-    "express": "^4.19.2",
+    "express": "^4.21.1",
     "mongojs": "^3.1.0"
   },
   "type": "module"
