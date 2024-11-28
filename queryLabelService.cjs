@@ -6,11 +6,11 @@ http.listen(port, function () {
 	console.log('listening on *: ' + port.toString());
 })
 const mongojs = require("mongojs")
-const db = mongojs("bsnetworkcache")
-db.on("error", (err) => {
+const Database = require("./Database.cjs")
+const db = new Database("bsnetworkcache")
+db.db.on("error", (err) => {
 	console.error("Database error event", err)
 })
-const labelCollection = db.collection("labels")
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(function (req, res, next) {
@@ -19,7 +19,6 @@ app.use(function (req, res, next) {
 	next()
 })
 
-const labelProjectDocument = { cid: 1, cts: 1, src: 1, uri: 1, val: 1 }
 app.post('/querylabels/', async (req, res) => {
 	// req.body
 	// validate zhe data
@@ -55,51 +54,7 @@ app.post('/querylabels/', async (req, res) => {
 				sortDocument = { _id: 1 }
 			}
 		}
-		// const skip = req.body.skip ?? 0
-		const outputDocument = { error: false }
-		let documents = new Promise(resolve => {
-			labelCollection.find(searchDocument, labelProjectDocument).sort(sortDocument).limit(20, async (err, docs) => {
-				if (err) return resolve([])
-				if (sortDocument._id == -1) docs.reverse()
-				outputDocument.data = docs
-				// fetch cursors for next pages
-				if (docs.length) {
-					const nextId = docs[docs.length - 1]._id
-					const previousId = docs[0]._id
-					const nextPromise = new Promise((resolve) => {
-						const clonedSearchDocument = JSON.parse(JSON.stringify(searchDocument))
-						clonedSearchDocument._id = {
-							$gt: nextId
-						}
-						labelCollection.find(clonedSearchDocument, labelProjectDocument).sort({ _id: 1 }).limit(1, (err, xDocs) => {
-							if (xDocs.length) {
-								outputDocument.nextCursor = nextId
-							}
-							resolve()
-						})
-					})
-					const previousPromise = new Promise((resolve) => {
-						const clonedSearchDocument = JSON.parse(JSON.stringify(searchDocument))
-						clonedSearchDocument._id = {
-							$lt: previousId
-						}
-						labelCollection.find(clonedSearchDocument, labelProjectDocument).sort({ _id: -1 }).limit(1, (err, xDocs) => {
-							if (xDocs.length) {
-								outputDocument.previousCursor = previousId
-							}
-							resolve()
-						})
-					})
-					await Promise.allSettled([nextPromise, previousPromise])
-					resolve(docs)
-
-				} else {
-					resolve(docs)
-				}
-			})
-		})
-		outputDocument.count = 0
-		documents = await documents
+		const outputDocument = await db.pagedGetLabels(searchDocument, sortDocument)
 		res.json(outputDocument)
 	} catch (error) {
 		console.error(error)
