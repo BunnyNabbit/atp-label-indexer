@@ -89,8 +89,8 @@ class Database {
 
 	getLabelGroupCounts(src, val) {
 		const query = {}
-		if (src) query["id.src"] = src
-		if (val) query["id.val"] = val
+		if (src) query["_id.src"] = src
+		if (val) query["_id.val"] = val
 
 		return new Promise((resolve, reject) => {
 			this.labelGroupCounts.find(query, (err, docs) => {
