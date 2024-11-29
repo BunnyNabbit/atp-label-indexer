@@ -1,4 +1,6 @@
 const listElement = document.getElementById("list")
+const labelCountListElement = document.getElementById("labelCountList")
+const service = "/api"
 
 function getAppUrl(uri) {
 	const originalUri = uri
@@ -222,10 +224,56 @@ class ZhatList extends GenericRowRenderer {
 	}
 }
 const zheList = new ZhatList(listElement)
+class LabelValueCount extends GenericRowRenderer {
+	constructor(listElement) {
+		super(listElement)
+		this.currentData = []
+		this.rows = ["val", "src", "count"]
+	}
+	fetchData(sourceDID) {
+		fetch(`${service}/labelcounts`, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				src: sourceDID,
+			})
+		}).then(response => {
+			response.json().then(response => {
+				this.populate(response.map(element => {
+					return {
+						count: element.count,
+						src: element._id.src,
+						val: element._id.val
+					}
+				}))
+			})
+		})
+	}
+	async updateQuery(field, data) {
+		if (field == "handle") {
+			if (data.startsWith("did:")) {
+				this.fetchData(data)
+			}
+			handleResolver.resolve(data).then(did => {
+				this.fetchData(did)
+			}).catch()
+		}
+	}
+}
+const labelValueCount = new LabelValueCount(labelCountListElement)
+labelValueCount.fetchData()
 const radioButtons = document.querySelectorAll('input[name="account"]')
 function tabChange() {
 	if (this.checked) {
 		zheList.updateQuery("accountMode", this.value)
+		if (this.value !== "labeler") {
+			labelValueCount.fetchData()
+		} else {
+			labelValueCount.updateQuery("handle", handleInput.value.trim().replace("@", ""))
+		}
 	}
 }
 for (const radioButton of radioButtons) {
@@ -234,9 +282,13 @@ for (const radioButton of radioButtons) {
 const handleInput = document.getElementById("handle")
 handleInput.onchange = function () {
 	zheList.updateQuery("handle", this.value.trim().replace("@", ""))
+	if (radioButtons.value !== "labeler") {
+		labelValueCount.fetchData()
+	} else {
+		labelValueCount.updateQuery("handle", this.value.trim().replace("@", ""))
+	}
 }
 
-const service = "/api"
 function queryLabels(queryData) {
 	return fetch(`${service}/querylabels`, {
 		method: 'POST',

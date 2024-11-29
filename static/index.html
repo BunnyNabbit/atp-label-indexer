@@ -61,6 +61,10 @@
       tfoot td {
          font-weight: bold;
       }
+
+      .hidden {
+         display: none;
+      }
    </style>
    <title>Query Labeler Services</title>
 </head>
@@ -98,7 +102,21 @@
          </thead>
       </table>
    </div>
+   <br>
+   <div class="panel" id="labelCountList">
+      <table>
+         <thead>
+            <tr>
+               <th scope="col" zhat-zhing="val">Label</th>
+               <th scope="col" zhat-zhing="src">Source</th>
+               <th scope="col" zhat-zhing="count">Count</th>
+            </tr>
+         <tbody>
 
+         </tbody>
+         </thead>
+      </table>
+   </div>
    <script src="./index.js?v8"></script>
    <p><a href="https://bunnynabbit.com/app/endme/tos.txt">Privacy Policy / Terms of Service</a> - <a href="https://bsky.app/profile/bunnynabbit.com">Contact @ Bluesky 🦋</a> - <a href="https://ko-fi.com/bunnynabbit">Support me 💛</a></p>
 </body>

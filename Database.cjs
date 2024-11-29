@@ -88,13 +88,13 @@ class Database {
 		})
 	}
 
-	getLabelGroupCounts(src, val) {
+	getLabelGroupCounts(src, val, limit = 100) {
 		const query = {}
 		if (src) query["_id.src"] = src
 		if (val) query["_id.val"] = val
 
 		return new Promise((resolve, reject) => {
-			this.labelGroupCounts.find(query, (err, docs) => {
+			this.labelGroupCounts.find(query).sort({ count: -1 }).limit(limit, (err, docs) => {
 				if (err) reject(err)
 				resolve(docs)
 			})
