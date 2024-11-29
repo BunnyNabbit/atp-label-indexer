@@ -40,24 +40,77 @@ class HandleResolver {
 }
 const handleResolver = new HandleResolver()
 
-// ogh rgi
-class ZhatList {
+class GenericRowRenderer {
 	/**
 	 * @param {HTMLTableElement} listElement 
 	 */
 	constructor(listElement) {
 		this.tableBody = listElement.querySelector("tbody")
+		this.rows = [] // Define the row data keys here
+	}
+	populate(data) {
+		this.tableBody.innerText = ""
+		data.forEach(element => {
+			const rowElement = document.createElement("tr")
+			this.tableBody.append(rowElement)
+			this.rows.forEach(rowName => {
+				const rowDataElement = document.createElement("td")
+				rowDataElement.innerText = element[rowName] ?? "N/A" // Default rendering
+				rowElement.append(rowDataElement)
+			})
+		})
+	}
+
+	clear() {
+		this.tableBody.innerText = ""
+	}
+}
+
+class ZhatList extends GenericRowRenderer {
+	constructor(listElement) {
+		super(listElement)
 		this.currentData = []
 		this.rows = ["val", "uri", "src", "cts", "cid"]
 		this.buttons = this.addButtons([[-20, "⬅️ Previous", "lt"], [20, "Next ➡️", "gt"]].reverse()) // ah yes, using emojis as icons
-		// this.cursor = null
 
 		this.resolvedDid = null
 		this.feedback = document.createElement("p")
 		this.tableBody.parentElement.parentElement.prepend(this.feedback)
 		this.accountMode = "labels"
-		// this.entriesCount = 0
-		// this.cursorDirection = "lt"
+	}
+	populate(data) {
+		this.currentData = data // Store the current data
+		super.populate(data) // Call the base class's populate method
+
+		// ZhatList specific rendering logic for certain columns
+		const rows = this.tableBody.querySelectorAll("tr")
+		rows.forEach((row, index) => {
+			const dataElement = data[index]
+			const uriCell = row.cells[1] // URI cell
+			const srcCell = row.cells[2] // Source cell
+
+			// URI cell rendering
+			const appUrl = getAppUrl(dataElement.uri)
+			uriCell.innerText = "" // Clear default rendering
+			if (appUrl[0]) {
+				const link = document.createElement("a")
+				link.href = appUrl[1]
+				link.innerText = appUrl[1]
+				link.target = "_blank"
+				uriCell.append(link)
+			} else {
+				uriCell.innerText = dataElement.uri ?? "N/A"
+			}
+
+			// Source cell rendering
+			srcCell.innerText = "" // Clear default rendering
+			const link = document.createElement("a")
+			const did = dataElement.src
+			link.href = `https://bsky.app/profile/${did}`
+			link.innerText = did
+			link.target = "_blank"
+			srcCell.append(link)
+		})
 	}
 	fetchData(cursorDirection, cursor) {
 		if (!this.resolvedDid) return this.tableBody.innerText = ""
