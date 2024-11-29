@@ -262,6 +262,22 @@ class LabelValueCount extends GenericRowRenderer {
 			}).catch()
 		}
 	}
+	populate(data) {
+		super.populate(data)
+		const rows = this.tableBody.querySelectorAll("tr")
+		rows.forEach((row, index) => {
+			const dataElement = data[index]
+			const srcCell = row.cells[1]
+
+			srcCell.innerText = ""
+			const link = document.createElement("a")
+			const did = dataElement.src
+			link.href = `https://bsky.app/profile/${did}`
+			link.innerText = did
+			link.target = "_blank"
+			srcCell.append(link)
+		})
+	}
 }
 const labelValueCount = new LabelValueCount(labelCountListElement)
 labelValueCount.fetchData()
