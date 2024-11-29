@@ -6,6 +6,7 @@ class Database {
 		this.cursorCollection = db.collection("labelCursors")
 		this.handleDidCollection = db.collection("resolveDid")
 		this.labelGroupCounts = db.collection("labelGroupCounts")
+		this.db = db
 	}
 
 	replaceLabel(label) {
@@ -89,8 +90,8 @@ class Database {
 
 	getLabelGroupCounts(src, val) {
 		const query = {}
-		if (src) query["id.src"] = src
-		if (val) query["id.val"] = val
+		if (src) query["_id.src"] = src
+		if (val) query["_id.val"] = val
 
 		return new Promise((resolve, reject) => {
 			this.labelGroupCounts.find(query, (err, docs) => {
@@ -114,6 +115,46 @@ class Database {
 				resolve(document)
 			})
 		})
+	}
+
+	async pagedGetLabels(searchDocument, sortDocument) {
+		const labelProjectDocument = { cid: 1, cts: 1, src: 1, uri: 1, val: 1 }
+		const outputDocument = { error: false }
+		const docs = await new Promise(resolve => {
+			this.labelCollection.find(searchDocument, labelProjectDocument).sort(sortDocument).limit(20, (err, docs) => {
+				if (err) return resolve([])
+				resolve(docs)
+			})
+		})
+		if (sortDocument._id === -1) docs.reverse()
+		outputDocument.data = docs
+	
+		outputDocument.count = 0 // previously a value for collection lengzh. unused
+		if (docs.length) {
+			const nextId = docs[docs.length - 1]._id
+			const previousId = docs[0]._id
+	
+			const nextPromise = new Promise((resolve) => {
+				const clonedSearchDocument = { ...searchDocument, _id: { $gt: nextId } }
+				this.labelCollection.find(clonedSearchDocument, labelProjectDocument).sort({ _id: 1 }).limit(1, (err, xDocs) => {
+					if (xDocs.length) {
+						outputDocument.nextCursor = nextId
+					}
+					resolve()
+				})
+			})
+			const previousPromise = new Promise((resolve) => {
+				const clonedSearchDocument = { ...searchDocument, _id: { $lt: previousId } }
+				this.labelCollection.find(clonedSearchDocument, labelProjectDocument).sort({ _id: -1 }).limit(1, (err, xDocs) => {
+					if (xDocs.length) {
+						outputDocument.previousCursor = previousId
+					}
+					resolve()
+				})
+			})
+			await Promise.allSettled([nextPromise, previousPromise])
+		}
+		return outputDocument
 	}
 }
 
