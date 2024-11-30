@@ -15,7 +15,6 @@
     "@atproto/common-web": "^0.3.0",
     "@atproto/crypto": "^0.4.0",
     "@atproto/identity": "^0.4.0",
-    "@atproto/ozone": "^0.1.27",
     "@atproto/xrpc-server": "^0.5.2",
     "bee-queue": "^1.7.1",
     "express": "^4.21.1",
