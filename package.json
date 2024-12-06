@@ -17,7 +17,7 @@
     "@atproto/identity": "~0.4.3",
     "@atproto/xrpc-server": "~0.5.2",
     "bee-queue": "^1.7.1",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "mongojs": "^3.1.0"
   },
   "type": "module"
