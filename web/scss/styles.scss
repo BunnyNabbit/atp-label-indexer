@@ -2,53 +2,53 @@
 // @import "bootstrap/scss/bootstrap";
 
 .hidden {
-   display: none;
+	display: none;
 }
 
 body {
-   font-family: Arial, Helvetica, sans-serif;
-   background-color: antiquewhite;
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: antiquewhite;
 }
 
 /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table */
 table {
-   border-collapse: collapse;
-   border: 2px solid rgb(140 140 140);
-   font-size: 0.8rem;
+	border-collapse: collapse;
+	border: 2px solid rgb(140 140 140);
+	font-size: 0.8rem;
 }
 
 caption {
-   caption-side: bottom;
-   padding: 10px;
-   font-weight: bold;
+	caption-side: bottom;
+	padding: 10px;
+	font-weight: bold;
 }
 
 thead,
 tfoot {
-   background-color: rgb(228 240 245);
+	background-color: rgb(228 240 245);
 }
 
 th,
 td {
-   border: 1px solid rgb(160 160 160);
-   /* padding: 8px 10px; */
-   overflow: hidden;
-   max-width: 240px;
-   word-break: break-all;
+	border: 1px solid rgb(160 160 160);
+	/* padding: 8px 10px; */
+	overflow: hidden;
+	max-width: 240px;
+	word-break: break-all;
 }
 
 td:last-of-type {
-   text-align: center;
+	text-align: center;
 }
 
 tbody>tr:nth-of-type(even) {
-   background-color: rgb(237 238 242);
+	background-color: rgb(237 238 242);
 }
 
 tfoot th {
-   text-align: right;
+	text-align: right;
 }
 
 tfoot td {
-   font-weight: bold;
+	font-weight: bold;
 }
