@@ -1,3 +1,9 @@
+// Import our custom CSS
+require('../scss/styles.scss')
+
+// Import all of Bootstrap's JS
+// const bootstrap = require("bootstrap")
+
 const listElement = document.getElementById("list")
 const labelCountListElement = document.getElementById("labelCountList")
 const service = "/api"
