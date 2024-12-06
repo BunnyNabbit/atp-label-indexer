@@ -32,7 +32,7 @@
     "@popperjs/core": "^2.11.8",
     "bee-queue": "^1.7.1",
     "bootstrap": "^5.3.3",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "mongojs": "^3.1.0"
   },
   "type": "module"
