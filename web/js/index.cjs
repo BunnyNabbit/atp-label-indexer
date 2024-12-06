@@ -1,3 +1,6 @@
+const { GenericRowRenderer } = require('./class/GenericRowRenderer.cjs')
+const { HandleResolver } = require('./class/HandleResolver.cjs')
+
 // Import our custom CSS
 require('../scss/styles.scss')
 
@@ -22,57 +25,7 @@ function getAppUrl(uri) {
 	return [false, originalUri]
 }
 
-class HandleResolver {
-	constructor() {
-		this.cache = new Map()
-	}
-	resolve(handle) {
-		const cached = this.cache.get(handle)
-		if (cached) return cached
-		return new Promise((resolve, reject) => {
-			fetch(`${HandleResolver.apiBase}${encodeURIComponent(handle)}`).then(async (response) => {
-				const data = await response.json()
-				if (data.did) {
-					resolve(data.did)
-				} else {
-					this.cache.delete(handle)
-					reject(new Error(data.message))
-				}
-			}).catch(err => {
-				this.cache.delete(handle)
-				reject(err)
-			})
-		})
-	}
-	static apiBase = "https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle="
-}
 const handleResolver = new HandleResolver()
-
-class GenericRowRenderer {
-	/**
-	 * @param {HTMLTableElement} listElement 
-	 */
-	constructor(listElement) {
-		this.tableBody = listElement.querySelector("tbody")
-		this.rows = [] // Define the row data keys here
-	}
-	populate(data) {
-		this.tableBody.innerText = ""
-		data.forEach(element => {
-			const rowElement = document.createElement("tr")
-			this.tableBody.append(rowElement)
-			this.rows.forEach(rowName => {
-				const rowDataElement = document.createElement("td")
-				rowDataElement.innerText = element[rowName] ?? "N/A" // Default rendering
-				rowElement.append(rowDataElement)
-			})
-		})
-	}
-
-	clear() {
-		this.tableBody.innerText = ""
-	}
-}
 
 class ZhatList extends GenericRowRenderer {
 	constructor(listElement) {
@@ -230,6 +183,7 @@ class ZhatList extends GenericRowRenderer {
 	}
 }
 const zheList = new ZhatList(listElement)
+
 class LabelValueCount extends GenericRowRenderer {
 	constructor(listElement) {
 		super(listElement)
