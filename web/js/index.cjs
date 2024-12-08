@@ -5,7 +5,7 @@ const { HandleResolver } = require('./class/HandleResolver.cjs')
 require('../scss/styles.scss')
 
 // Import all of Bootstrap's JS
-// const bootstrap = require("bootstrap")
+const bootstrap = require("bootstrap")
 
 const listElement = document.getElementById("list")
 const labelCountListElement = document.getElementById("labelCountList")
@@ -32,7 +32,7 @@ class ZhatList extends GenericRowRenderer {
 		super(listElement)
 		this.currentData = []
 		this.rows = ["val", "uri", "src", "cts", "cid"]
-		this.buttons = this.addButtons([[-20, "⬅️ Previous", "lt"], [20, "Next ➡️", "gt"]].reverse()) // ah yes, using emojis as icons
+		this.buttons = this.addButtons([[-20, "Previous", "lt"], [20, "Next", "gt"]].reverse()) // ah yes, using emojis as icons
 
 		this.resolvedDid = null
 		this.feedback = document.createElement("p")
@@ -118,10 +118,18 @@ class ZhatList extends GenericRowRenderer {
 	}
 	addButtons(pageButtons) {
 		const buttons = []
+		const navElement = document.createElement("nav")
+		const ulElement = document.createElement("ul")
+		ulElement.className = "pagination"
+		this.tableBody.parentElement.parentElement.prepend(ulElement)
 		pageButtons.forEach(buttonData => {
 			const changeNumber = buttonData[0]
 			const text = buttonData[1]
-			const buttonElement = document.createElement("button")
+			const liElement = document.createElement("li")
+			liElement.className = "page-item"
+			const buttonElement = document.createElement("a")
+			buttonElement.className = "page-link"
+			buttonElement.href = "#"
 			buttonElement.innerText = text
 			buttonElement.onclick = () => { // what happens next isnt funny
 				const cursorDirection = buttonData[2]
@@ -133,7 +141,8 @@ class ZhatList extends GenericRowRenderer {
 				}
 				this.fetchData(cursorDirection, cursor)
 			}
-			this.tableBody.parentElement.parentElement.prepend(buttonElement)
+			liElement.append(buttonElement)
+			ulElement.prepend(liElement)
 			buttons.push(buttonElement)
 		})
 		return buttons

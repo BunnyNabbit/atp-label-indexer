@@ -17,55 +17,71 @@
 </head>
 
 <body>
-   <h1>Query labels</h1>
-   <fieldset>
-      <legend>Select query type:</legend>
-      <div>
-         <input type="radio" id="labels" name="account" value="labels" checked />
-         <label for="labels">Query labels applied for an account</label>
+   <nav class="navbar navbar-expand-lg bg-body-tertiary" id="kobold-navbar">
+      <div class="container-fluid">
+         <a class="navbar-brand" href="#">Query Labeler Services</a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarText">
+            <span class="navbar-text">
+               <!-- Navbar text with an inline element -->
+               <!-- <button class="btn btn-primary">Request</button> -->
+            </span>
+         </div>
       </div>
-      <div>
-         <input type="radio" id="labeler" name="account" value="labeler" />
-         <label for="labeler">Query labels created by a labeler account</label>
+   </nav>
+   <div class="container">
+      <fieldset class="container py-4 px-3 mx-auto border">
+         <legend>Select query type</legend>
+         <div>
+            <input type="radio" id="labels" name="account" value="labels" checked />
+            <label for="labels">Query labels applied for an account</label>
+         </div>
+         <div>
+            <input type="radio" id="labeler" name="account" value="labeler" />
+            <label for="labeler">Query labels created by a labeler account</label>
+         </div>
+         <label for="handle">Handle</label>
+         <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">@</span>
+            <input type="text" id="handle" class="form-control" placeholder="moderation.bsky.app" aria-label="Handle" aria-describedby="basic-addon1">
+         </div>
+      </fieldset>
+      <div class="panel table-responsive" id="list">
+         <table class="table table-bordered">
+            <thead>
+               <tr>
+                  <th scope="col" zhat-zhing="val">Label</th>
+                  <th scope="col" zhat-zhing="uri">Content</th>
+                  <th scope="col" zhat-zhing="src">Labeler</th>
+                  <th scope="col" zhat-zhing="cts">Timestamp</th>
+                  <th scope="col" zhat-zhing="cid">CID</th>
+               </tr>
+            <tbody class="table-group-divider">
+
+            </tbody>
+            </thead>
+         </table>
       </div>
-   </fieldset>
-   <input type="text" id="handle" placeholder="moderation.bsky.app">
-   <label for="handle">Handle</label><br><br>
-   <!-- <input type="text" id="handle" placeholder="bsky.app">
-   <label for="handle">Handle</label> -->
-   <div class="panel" id="list">
-      <table>
-         <thead>
-            <tr>
-               <th scope="col" zhat-zhing="val">Label</th>
-               <th scope="col" zhat-zhing="uri">Content</th>
-               <th scope="col" zhat-zhing="src">Labeler</th>
-               <th scope="col" zhat-zhing="cts">Timestamp</th>
-               <th scope="col" zhat-zhing="cid">CID</th>
-            </tr>
-         <tbody>
+      <br>
+      <div class="panel table-responsive" id="labelCountList">
+         <table class="table table-bordered">
+            <thead>
+               <tr>
+                  <th scope="col" zhat-zhing="val">Label</th>
+                  <th scope="col" zhat-zhing="src">Source</th>
+                  <th scope="col" zhat-zhing="count">Count</th>
+               </tr>
+            <tbody class="table-group-divider">
 
-         </tbody>
-         </thead>
-      </table>
-   </div>
-   <br>
-   <div class="panel" id="labelCountList">
-      <table>
-         <thead>
-            <tr>
-               <th scope="col" zhat-zhing="val">Label</th>
-               <th scope="col" zhat-zhing="src">Source</th>
-               <th scope="col" zhat-zhing="count">Count</th>
-            </tr>
-         <tbody>
-
-         </tbody>
-         </thead>
-      </table>
+            </tbody>
+            </thead>
+         </table>
+      </div>
+      <p><a href="https://bunnynabbit.com/app/endme/tos.txt">Privacy Policy / Terms of Service</a> - <a href="https://bsky.app/profile/bunnynabbit.com">Contact @ Bluesky 🦋</a> - <a href="https://ko-fi.com/bunnynabbit">Support me 💛</a></p>
    </div>
    <script src="./index.cjs"></script>
-   <p><a href="https://bunnynabbit.com/app/endme/tos.txt">Privacy Policy / Terms of Service</a> - <a href="https://bsky.app/profile/bunnynabbit.com">Contact @ Bluesky 🦋</a> - <a href="https://ko-fi.com/bunnynabbit">Support me 💛</a></p>
 </body>
 
 </html>
