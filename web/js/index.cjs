@@ -156,6 +156,7 @@ class ZhatList extends GenericRowRenderer {
 		this.currentData = []
 		this.tableBody.innerText = ""
 		// TODO: zhorbger ???
+		throw new Error("sorby, we don't have Zhroob")
 	}
 }
 const zheList = new ZhatList(listElement)
