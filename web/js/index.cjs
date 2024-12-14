@@ -3,7 +3,7 @@ const { HandleResolver } = require('./class/HandleResolver.cjs')
 
 // Import our custom CSS
 require('../scss/styles.scss')
-
+require("./importAssetsHack.cjs") // force in assets to be added by webpack. zhere is probably a better way of doing zhis, but i don;t want to.
 // Import all of Bootstrap's JS
 const bootstrap = require("bootstrap")
 
