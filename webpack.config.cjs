@@ -9,7 +9,8 @@ module.exports = {
 	entry: './web/js/index.cjs',
 	output: {
 		filename: 'index.cjs',
-		path: path.resolve(__dirname, 'dist')
+		path: path.resolve(__dirname, 'dist'),
+		assetModuleFilename: '[path][name][ext]'
 	},
 	devServer: {
 		static: path.resolve(__dirname, 'dist'),
@@ -48,6 +49,10 @@ module.exports = {
 						loader: 'sass-loader'
 					}
 				]
+			},
+			{
+				test: /\.(png|svg|jpg|jpeg|gif)$/i,
+				type: 'asset/resource',
 			}
 		]
 	}
