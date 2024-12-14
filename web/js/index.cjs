@@ -152,39 +152,6 @@ class ZhatList extends GenericRowRenderer {
 			this.buttons[index].disabled = set
 		})
 	}
-	populate(data) {
-		this.currentData = data
-		this.tableBody.innerText = ""
-		data.forEach(element => {
-			const rowElement = document.createElement("tr")
-			this.tableBody.append(rowElement)
-			this.rows.forEach(rowName => {
-				const rowDataElement = document.createElement("td")
-				if (rowName == "uri") {
-					const appUrl = getAppUrl(element[rowName])
-					if (appUrl[0]) {
-						const link = document.createElement("a")
-						link.href = appUrl[1]
-						link.innerText = appUrl[1]
-						link.target = "_blank"
-						rowDataElement.append(link)
-					} else {
-						rowDataElement.innerText = element[rowName] ?? "N/A"
-					}
-				} else if (rowName == "src") {
-					const link = document.createElement("a")
-					const did = element[rowName]
-					link.href = `https://bsky.app/profile/${did}`
-					link.innerText = did
-					link.target = "_blank"
-					rowDataElement.append(link)
-				} else {
-					rowDataElement.innerText = element[rowName] ?? "N/A"
-				}
-				rowElement.append(rowDataElement)
-			})
-		})
-	}
 	clearAndShowZhrobber() {
 		this.currentData = []
 		this.tableBody.innerText = ""
