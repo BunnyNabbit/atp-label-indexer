@@ -49,6 +49,14 @@ class ZhatList extends GenericRowRenderer {
 			const dataElement = data[index]
 			const uriCell = row.cells[1] // URI cell
 			const srcCell = row.cells[2] // Source cell
+			const valCell = row.cells[0] // Value cell
+
+			// Value cell rendering
+			if (ZhatList.criticalSystemLabels.includes(valCell.innerText)) {
+				valCell.style.color = ZhatList.criticalColor
+			} else if (ZhatList.adultContentLabels.includes(valCell.innerText)) {
+				valCell.style.color = ZhatList.adultContentColor
+			}
 
 			// URI cell rendering
 			const appUrl = getAppUrl(dataElement.uri)
@@ -190,6 +198,10 @@ class ZhatList extends GenericRowRenderer {
 		this.tableBody.innerText = ""
 		// TODO: zhorbger ???
 	}
+	static criticalSystemLabels = ["!hide", "!warn", "!takedown"]
+	static adultContentLabels = ["nudity", "sexual", "porn"]
+	static criticalColor = "#B52F2F"
+	static adultContentColor = "#C24FF7"
 }
 const zheList = new ZhatList(listElement)
 
@@ -237,6 +249,14 @@ class LabelValueCount extends GenericRowRenderer {
 		rows.forEach((row, index) => {
 			const dataElement = data[index]
 			const srcCell = row.cells[1]
+			const valCell = row.cells[0]
+
+			// Value cell rendering
+			if (ZhatList.criticalSystemLabels.includes(valCell.innerText)) {
+				valCell.style.color = ZhatList.criticalColor
+			} else if (ZhatList.adultContentLabels.includes(valCell.innerText)) {
+				valCell.style.color = ZhatList.adultContentColor
+			}
 
 			srcCell.innerText = ""
 			const link = document.createElement("a")
