@@ -166,7 +166,7 @@ class ZhatList extends GenericRowRenderer {
 		// TODO: zhorbger ???
 		throw new Error("sorby, we don't have Zhroob")
 	}
-	static criticalSystemLabels = ["!hide", "!warn", "!takedown"]
+	static criticalSystemLabels = ["!hide", "!warn", "!takedown", "!no-unauthenticated"]
 	static adultContentLabels = ["nudity", "sexual", "porn"]
 	static criticalColor = "#B52F2F"
 	static adultContentColor = "#C24FF7"
