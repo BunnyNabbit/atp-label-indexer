@@ -63,16 +63,21 @@ app.post('/api/querylabels/', async (req, res) => {
 
 })
 app.post('/api/labelcounts/', async (req, res) => {
-	function isValid(str) {
+	function isStringValid(str) {
 		if (str == null) return true
 		if (typeof str === "string" && str.length < 300) return true
 		return false
 	}
-	if (!isValid(req.body.src) || !isValid(req.body.val)) {
+	function transformNumber(num = 0) {
+		if (typeof num !== "number") return 0
+		if (isNaN(num) || !isFinite(num)) return 0
+		return Math.abs(Math.floor(num)) 
+	}
+	if (!isStringValid(req.body.src) || !isStringValid(req.body.val)) {
 		res.status(400).json({ error: "Bad request" })
 		return
 	}
-	db.getLabelGroupCounts(req.body.src, req.body.val).then(document => {
+	db.getLabelGroupCounts(req.body.src, req.body.val, 100, transformNumber(req.body.skip)).then(document => {
 		res.json(document)
 	}).catch(err => {
 		console.error(err)

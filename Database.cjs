@@ -88,13 +88,13 @@ class Database {
 		})
 	}
 
-	getLabelGroupCounts(src, val, limit = 100) {
+	getLabelGroupCounts(src, val, limit = 100, skip = 0) {
 		const query = {}
 		if (src) query["_id.src"] = src
 		if (val) query["_id.val"] = val
 
 		return new Promise((resolve, reject) => {
-			this.labelGroupCounts.find(query).sort({ count: -1 }).limit(limit, (err, docs) => {
+			this.labelGroupCounts.find(query).sort({ count: -1 }).limit(limit).skip(skip, (err, docs) => {
 				if (err) reject(err)
 				resolve(docs)
 			})
@@ -128,12 +128,12 @@ class Database {
 		})
 		if (sortDocument._id === -1) docs.reverse()
 		outputDocument.data = docs
-	
+
 		outputDocument.count = 0 // previously a value for collection lengzh. unused
 		if (docs.length) {
 			const nextId = docs[docs.length - 1]._id
 			const previousId = docs[0]._id
-	
+
 			const nextPromise = new Promise((resolve) => {
 				const clonedSearchDocument = { ...searchDocument, _id: { $gt: nextId } }
 				this.labelCollection.find(clonedSearchDocument, labelProjectDocument).sort({ _id: 1 }).limit(1, (err, xDocs) => {

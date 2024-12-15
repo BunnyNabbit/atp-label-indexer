@@ -178,8 +178,35 @@ class LabelValueCount extends GenericRowRenderer {
 		super(listElement)
 		this.currentData = []
 		this.rows = ["val", "src", "count"]
+		this.buttons = this.addButtons([[-100, "Previous"], [100, "Next"]].reverse())
+		this.cursor = 0
+		this.resolvedDid = null
 	}
-	fetchData(sourceDID) {
+	addButtons(pageButtons) {
+		const buttons = []
+		const ulElement = document.createElement("ul")
+		ulElement.className = "pagination"
+		this.tableBody.parentElement.parentElement.prepend(ulElement)
+		pageButtons.forEach(buttonData => {
+			const changeNumber = buttonData[0]
+			const text = buttonData[1]
+			const liElement = document.createElement("li")
+			liElement.className = "page-item"
+			const buttonElement = document.createElement("a")
+			buttonElement.className = "page-link"
+			buttonElement.href = "#"
+			buttonElement.innerText = text
+			buttonElement.onclick = () => {
+				this.cursor = Math.max(0, this.cursor + changeNumber)
+				this.fetchData(this.resolvedDid, this.cursor)
+			}
+			liElement.append(buttonElement)
+			ulElement.prepend(liElement)
+			buttons.push(buttonElement)
+		})
+		return buttons
+	}
+	fetchData(sourceDID, skip = 0) {
 		fetch(`${service}/labelcounts`, {
 			method: 'POST',
 			headers: {
@@ -188,6 +215,7 @@ class LabelValueCount extends GenericRowRenderer {
 			},
 			body: JSON.stringify({
 				src: sourceDID,
+				skip
 			})
 		}).then(response => {
 			response.json().then(response => {
@@ -204,11 +232,16 @@ class LabelValueCount extends GenericRowRenderer {
 	async updateQuery(field, data) {
 		if (field == "handle") {
 			if (data.startsWith("did:")) {
+				this.resolvedDid = data
 				this.fetchData(data)
+				return
 			}
 			handleResolver.resolve(data).then(did => {
+				this.resolvedDid = did
 				this.fetchData(did)
-			}).catch()
+			}).catch(err => {
+				this.resolvedDid = null
+			})
 		}
 	}
 	populate(data) {
