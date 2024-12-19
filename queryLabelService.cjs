@@ -38,6 +38,9 @@ app.post('/api/querylabels/', async (req, res) => {
 			res.status(400).json({ error: "invalid src. i expected a did." })
 			return
 		}
+		if (req.body.val && typeof req.body.val === "string" && req.body.val.length < 300) {
+			searchDocument.val = req.body.val
+		}
 		const direction = req.body.cursorDirection
 		let sortDocument = { _id: -1 }
 		if (req.body.cursor && typeof req.body.cursor === "string" && req.body.cursor.length < 32 && req.body.cursorDirection) {

@@ -50,6 +50,18 @@
             <span class="input-group-text" id="basic-addon1">@</span>
             <input type="text" id="handle" class="form-control" placeholder="moderation.bsky.app" aria-label="Handle" aria-describedby="basic-addon1">
          </div>
+         <label for="fliter">Label value filter</label>
+         <div class="input-group mb-3">
+            <input type="text" id="fliter" class="form-control" placeholder="" aria-label="Label value filter" aria-describedby="basic-addon1">
+            <script>
+               // Randomize placeholder
+               const placeholders = ["pooltoy", "vip-protection", "silly", "javascript", "embarrassment-slipped-on-a-banana-peel-and-it-made-that-sound", "verified", "cringe", "discord-screenshot", "alf", "games-publisher"]
+               function randomIntFromInterval(min, max) {
+                  return Math.floor(Math.random() * (max - min + 1) + min)
+               }
+               document.getElementById("fliter").placeholder = placeholders[randomIntFromInterval(0, placeholders.length -1)]
+            </script>
+         </div>
       </fieldset>
       <div class="panel table-responsive" id="list">
          <table class="table table-bordered">

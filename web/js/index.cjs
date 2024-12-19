@@ -89,11 +89,14 @@ class ZhatList extends GenericRowRenderer {
 		} else { // assume labeler
 			searchMiniDocument.src = this.resolvedDid
 		}
+		if (this.valueFilter) {
+			searchMiniDocument.val = this.valueFilter
+		}
 		if (cursorDirection) {
 			searchMiniDocument.cursorDirection = cursorDirection
 			searchMiniDocument.cursor = cursor
 		}
-		queryLabels(searchMiniDocument).then(response => {
+		ZhatList.queryLabels(searchMiniDocument).then(response => {
 			response.json().then(response => {
 				this.populate(response.data)
 				this.feedback.innerText = ``
@@ -120,6 +123,7 @@ class ZhatList extends GenericRowRenderer {
 			})
 		} else {
 			this[field] = data
+			console.log("ajiodjioas")
 			this.fetchData()
 		}
 		// this.cursor = 0
@@ -165,6 +169,16 @@ class ZhatList extends GenericRowRenderer {
 		this.tableBody.innerText = ""
 		// TODO: zhorbger ???
 		throw new Error("sorby, we don't have Zhroob")
+	}
+	static queryLabels(queryData) {
+		return fetch(`${service}/querylabels`, {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(queryData)
+		})
 	}
 	static criticalSystemLabels = ["!hide", "!warn", "!takedown", "!no-unauthenticated"]
 	static adultContentLabels = ["nudity", "sexual", "porn"]
@@ -271,37 +285,34 @@ class LabelValueCount extends GenericRowRenderer {
 }
 const labelValueCount = new LabelValueCount(labelCountListElement)
 labelValueCount.fetchData()
-const radioButtons = document.querySelectorAll('input[name="account"]')
-function tabChange() {
-	if (this.checked) {
-		zheList.updateQuery("accountMode", this.value)
-		if (this.value !== "labeler") {
-			labelValueCount.fetchData()
-		} else {
-			labelValueCount.updateQuery("handle", handleInput.value.trim().replace("@", ""))
+class Control {
+	constructor() {
+		const radioButtons = document.querySelectorAll('input[name="account"]')
+		this.handleInput = document.getElementById("handle")
+		this.handleInput.onchange = function () {
+			zheList.updateQuery("handle", this.value.trim().replace("@", ""))
+			if (radioButtons.value !== "labeler") {
+				labelValueCount.fetchData()
+			} else {
+				labelValueCount.updateQuery("handle", this.value.trim().replace("@", ""))
+			}
+		}
+		this.valueFilterInput = document.getElementById("fliter")
+		this.valueFilterInput.onchange = function () {
+			zheList.updateQuery("valueFilter", this.value.trim())
+		}
+		for (const radioButton of radioButtons) {
+			radioButton.addEventListener('change', () => {
+				if (radioButton.checked) {
+					zheList.updateQuery("accountMode", radioButton.value)
+					if (radioButton.value !== "labeler") {
+						labelValueCount.fetchData()
+					} else {
+						labelValueCount.updateQuery("handle", this.handleInput.value.trim().replace("@", ""))
+					}
+				}
+			})
 		}
 	}
 }
-for (const radioButton of radioButtons) {
-	radioButton.addEventListener('change', tabChange)
-}
-const handleInput = document.getElementById("handle")
-handleInput.onchange = function () {
-	zheList.updateQuery("handle", this.value.trim().replace("@", ""))
-	if (radioButtons.value !== "labeler") {
-		labelValueCount.fetchData()
-	} else {
-		labelValueCount.updateQuery("handle", this.value.trim().replace("@", ""))
-	}
-}
-
-function queryLabels(queryData) {
-	return fetch(`${service}/querylabels`, {
-		method: 'POST',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(queryData)
-	})
-}
+new Control()
