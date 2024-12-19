@@ -142,7 +142,8 @@ class ZhatList extends GenericRowRenderer {
 			buttonElement.className = "page-link"
 			buttonElement.href = "#"
 			buttonElement.innerText = text
-			buttonElement.onclick = () => { // what happens next isnt funny
+			buttonElement.onclick = (event) => { // what happens next isnt funny
+				event.preventDefault()
 				const cursorDirection = buttonData[2]
 				let cursor
 				if (cursorDirection == "lt") {
@@ -209,7 +210,8 @@ class LabelValueCount extends GenericRowRenderer {
 			buttonElement.className = "page-link"
 			buttonElement.href = "#"
 			buttonElement.innerText = text
-			buttonElement.onclick = () => {
+			buttonElement.onclick = (event) => {
+				event.preventDefault()
 				this.cursor = Math.max(0, this.cursor + changeNumber)
 				this.fetchData(this.resolvedDid, this.cursor)
 			}
