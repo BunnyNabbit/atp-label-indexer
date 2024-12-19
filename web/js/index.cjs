@@ -82,7 +82,6 @@ class ZhatList extends GenericRowRenderer {
 		})
 	}
 	fetchData(cursorDirection, cursor) {
-		if (!this.resolvedDid) return this.tableBody.innerText = ""
 		const searchMiniDocument = {}
 		if (this.accountMode == "labels") {
 			searchMiniDocument.did = this.resolvedDid
@@ -285,6 +284,7 @@ class LabelValueCount extends GenericRowRenderer {
 }
 const labelValueCount = new LabelValueCount(labelCountListElement)
 labelValueCount.fetchData()
+zheList.fetchData()
 class Control {
 	constructor() {
 		const radioButtons = document.querySelectorAll('input[name="account"]')

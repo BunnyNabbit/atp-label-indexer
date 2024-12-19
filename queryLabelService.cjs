@@ -24,9 +24,7 @@ app.post('/api/querylabels/', async (req, res) => {
 	// validate zhe data
 	try {
 		const searchDocument = {}
-		let didAdded = false
 		if (req.body.did && typeof req.body.did === "string" && req.body.did.length < 300 && req.body.did.startsWith("did:")) {
-			didAdded = true
 			let escaped = req.body.did.replace(/([()[{*+.$^\\|?])/g, '\\$1')
 			searchDocument.uri = {
 				$in: [RegExp(`^at:\\/\\/${escaped}`), escaped]
@@ -34,9 +32,6 @@ app.post('/api/querylabels/', async (req, res) => {
 		}
 		if (req.body.src && typeof req.body.src === "string" && req.body.src.length < 300 && req.body.src.startsWith("did:")) {
 			searchDocument.src = req.body.src
-		} else if (!didAdded) {
-			res.status(400).json({ error: "invalid src. i expected a did." })
-			return
 		}
 		if (req.body.val && typeof req.body.val === "string" && req.body.val.length < 300) {
 			searchDocument.val = req.body.val
