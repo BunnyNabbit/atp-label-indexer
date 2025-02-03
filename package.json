@@ -28,7 +28,7 @@
     "@atproto/common": "~0.4.4",
     "@atproto/common-web": "~0.3.1",
     "@atproto/crypto": "~0.4.2",
-    "@atproto/identity": "~0.4.3",
+    "@atproto/identity": "~0.4.5",
     "@atproto/xrpc-server": "~0.5.2",
     "@popperjs/core": "^2.11.8",
     "bee-queue": "^1.7.1",
