@@ -1,5 +1,7 @@
 # ATProto Label Indexer
 It uses MongoDB to store these labels. These labels could get queried from another service, such as a [label driven feed generator](https://github.com/BunnyNabbit/label-driven-feed-generator). A web interface to browse these labels is also included in this project.
+
+Query interface live at https://labels.bunnynabbit.com/.
 ## Dependencies
 - [MongoDB](https://www.mongodb.com/).
 - [Node.js](https://nodejs.org/).
