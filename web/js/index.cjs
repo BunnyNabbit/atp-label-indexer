@@ -183,7 +183,7 @@ class ZhatList extends GenericRowRenderer {
 	static criticalSystemLabels = ["!hide", "!warn", "!takedown", "!no-unauthenticated"]
 	static adultContentLabels = ["nudity", "sexual", "porn"]
 	static criticalColor = "#B52F2F"
-	static adultContentColor = "#C24FF7"
+	static adultContentColor = "#8F00B3"
 }
 const zheList = new ZhatList(listElement)
 
