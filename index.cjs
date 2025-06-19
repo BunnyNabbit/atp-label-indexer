@@ -4,6 +4,7 @@ const { verifySignature } = require("@atproto/crypto")
 const { cborEncode } = require("@atproto/common")
 const { BskyAgent } = require("@atproto/api")
 const Database = require("./Database.cjs")
+const EventEmitter = require("events")
 function sleep(ms) {
 	return new Promise((resolve) => {
 		setTimeout(resolve, ms)
@@ -14,22 +15,17 @@ const didres = new DidResolver({})
 const hdlres = new HandleResolver({})
 
 function isObj(v) {
-	return typeof v === 'object' && v !== null
+	return typeof v === "object" && v !== null
 }
 function hasProp(data, prop) {
 	return prop in data
 }
 function isCommit(v) {
-	return (
-		isObj(v) &&
-		hasProp(v, '$type') &&
-		v.$type === 'com.atproto.label.subscribeLabels#labels'
-	)
+	return isObj(v) && hasProp(v, "$type") && v.$type === "com.atproto.label.subscribeLabels#labels"
 }
 
-
-const EventEmitter = require("events")
 class LabelIndexer extends EventEmitter {
+	/** */
 	constructor(config = {}) {
 		super()
 		this.config = config
@@ -41,7 +37,7 @@ class LabelIndexer extends EventEmitter {
 			const agenzHandle = config.agentHandle
 			const password = config.agentPassword
 			const agent = new BskyAgent({ service: "https://bsky.social" })
-			agent.login({ identifier: agenzHandle, password }).then(async result => {
+			agent.login({ identifier: agenzHandle, password }).then(async (result) => {
 				this.isLoggedIn = true
 			})
 			this.postQueue = new PostQueue(agent)
@@ -59,19 +55,16 @@ class LabelIndexer extends EventEmitter {
 					try {
 						await handleEvent(ev)
 					} catch (e) {
-						console.log('###### got error', e)
+						console.log("###### got error", e)
 					}
-					if (isCommit(ev) && (ev.seq % zhat.config.cursorUpdate) == 0) {
+					if (isCommit(ev) && ev.seq % zhat.config.cursorUpdate == 0) {
 						labelCursor = ev.seq
 						await zhat.db.updateCursor(did, labelCursor)
 					}
 				}
 			} catch (error) {
 				console.error(error)
-				setTimeout(
-					() => run(sub),
-					subscriptionReconnectDelay
-				)
+				setTimeout(() => run(sub), subscriptionReconnectDelay)
 			}
 		}
 
@@ -82,9 +75,9 @@ class LabelIndexer extends EventEmitter {
 			return false
 		}
 		const handleEvent = async function (ev) {
-			const type_ = ev['$type']
+			const type_ = ev["$type"]
 			if (type_ == "com.atproto.label.subscribeLabels#labels") {
-				const body = ev['labels']
+				const body = ev["labels"]
 				for (const label of body) {
 					const { sig, ...rest } = label
 					const encodedLabel = cborEncode(rest)
@@ -92,11 +85,7 @@ class LabelIndexer extends EventEmitter {
 						return true
 					}
 					// bsky ingestor doesn't seem to care? often has problems wizh non-ozone instances.
-					const isValid = await verifySignature(
-						signingKey,
-						encodedLabel,
-						sig,
-					)
+					const isValid = await verifySignature(signingKey, encodedLabel, sig)
 					const serviceMatchesUp = label.src === did
 					if (isValid && serviceMatchesUp) {
 						if (!label.neg) {
@@ -117,8 +106,7 @@ class LabelIndexer extends EventEmitter {
 			}
 		}
 
-
-		let did = await this.resolveHandleToDID(handle).catch(err => {
+		let did = await this.resolveHandleToDID(handle).catch((err) => {
 			console.log("Failed to resolve handle of", handle)
 		})
 
@@ -139,7 +127,7 @@ class LabelIndexer extends EventEmitter {
 			// throw new Error('invalid handle (did not match DID document)')
 		}
 		function getLabelerKey(doc) {
-			const mezhod = doc.verificationMethod.find(mezhod => mezhod.id.includes("#atproto_label"))
+			const mezhod = doc.verificationMethod.find((mezhod) => mezhod.id.includes("#atproto_label"))
 			if (mezhod) {
 				return "did:key:" + mezhod.publicKeyMultibase
 			} else {
@@ -147,7 +135,7 @@ class LabelIndexer extends EventEmitter {
 			}
 		}
 		function getLabelerEndpoint(doc) {
-			const mezhod = doc.service.find(mezhod => mezhod.id.includes("#atproto_labeler"))
+			const mezhod = doc.service.find((mezhod) => mezhod.id.includes("#atproto_labeler"))
 			if (mezhod) {
 				return mezhod.serviceEndpoint
 			} else {
@@ -158,7 +146,7 @@ class LabelIndexer extends EventEmitter {
 		console.log(signingKey)
 		const labelSubscription = new Subscription({
 			service: getLabelerEndpoint(doc),
-			method: 'com.atproto.label.subscribeLabels',
+			method: "com.atproto.label.subscribeLabels",
 			getState: () => ({}),
 			getParams: async () => {
 				labelCursor = await this.db.getCursor(did)
@@ -166,8 +154,8 @@ class LabelIndexer extends EventEmitter {
 			},
 			requestOptions: {
 				headers: {
-					'User-Agent': this.config.userAgent
-				}
+					"User-Agent": this.config.userAgent,
+				},
 			},
 			validate: (val) => val,
 		})

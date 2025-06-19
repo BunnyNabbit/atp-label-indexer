@@ -1,8 +1,8 @@
-const { GenericRowRenderer } = require('./class/GenericRowRenderer.cjs')
-const { HandleResolver } = require('./class/HandleResolver.cjs')
+const { GenericRowRenderer } = require("./class/GenericRowRenderer.cjs")
+const { HandleResolver } = require("./class/HandleResolver.cjs")
 
 // Import our custom CSS
-require('../scss/styles.scss')
+require("../scss/styles.scss")
 require("./importAssetsHack.cjs") // force in assets to be added by webpack. zhere is probably a better way of doing zhis, but i don;t want to.
 // Import all of Bootstrap's JS
 const bootstrap = require("bootstrap")
@@ -28,17 +28,24 @@ function getAppUrl(uri) {
 const handleResolver = new HandleResolver()
 
 class ZhatList extends GenericRowRenderer {
+	/** */
 	constructor(listElement) {
 		super(listElement)
 		this.currentData = []
 		this.rows = ["val", "uri", "src", "cts", "cid"]
-		this.buttons = this.addButtons([[-20, "Previous", "lt"], [20, "Next", "gt"]].reverse()) // ah yes, using emojis as icons
+		this.buttons = this.addButtons(
+			[
+				[-20, "Previous", "lt"],
+				[20, "Next", "gt"],
+			].reverse()
+		) 
 
 		this.resolvedDid = null
 		this.feedback = document.createElement("p")
 		this.tableBody.parentElement.parentElement.prepend(this.feedback)
 		this.accountMode = "labels"
 	}
+
 	populate(data) {
 		this.currentData = data // Store the current data
 		super.populate(data) // Call the base class's populate method
@@ -81,11 +88,13 @@ class ZhatList extends GenericRowRenderer {
 			srcCell.append(link)
 		})
 	}
+
 	fetchData(cursorDirection, cursor) {
 		const searchMiniDocument = {}
 		if (this.accountMode == "labels") {
 			searchMiniDocument.did = this.resolvedDid
-		} else { // assume labeler
+		} else {
+			// assume labeler
 			searchMiniDocument.src = this.resolvedDid
 		}
 		if (this.valueFilter) {
@@ -95,8 +104,8 @@ class ZhatList extends GenericRowRenderer {
 			searchMiniDocument.cursorDirection = cursorDirection
 			searchMiniDocument.cursor = cursor
 		}
-		ZhatList.queryLabels(searchMiniDocument).then(response => {
-			response.json().then(response => {
+		ZhatList.queryLabels(searchMiniDocument).then((response) => {
+			response.json().then((response) => {
 				this.populate(response.data)
 				this.feedback.innerText = ``
 				this.nextCursor = response.nextCursor
@@ -105,6 +114,7 @@ class ZhatList extends GenericRowRenderer {
 			})
 		})
 	}
+
 	async updateQuery(field, data) {
 		if (field == "handle") {
 			if (data.startsWith("did:")) {
@@ -112,14 +122,17 @@ class ZhatList extends GenericRowRenderer {
 				this.fetchData()
 				return
 			}
-			handleResolver.resolve(data).then(did => {
-				this.feedback.innerText = ""
-				this.resolvedDid = did
-				this.fetchData()
-			}).catch(err => {
-				this.feedback.innerText = "Failed to resolve handle (watch out for whitespace)"
-				this.resolvedDid = null
-			})
+			handleResolver
+				.resolve(data)
+				.then((did) => {
+					this.feedback.innerText = ""
+					this.resolvedDid = did
+					this.fetchData()
+				})
+				.catch((err) => {
+					this.feedback.innerText = "Failed to resolve handle (watch out for whitespace)"
+					this.resolvedDid = null
+				})
 		} else {
 			this[field] = data
 			console.log("ajiodjioas")
@@ -127,13 +140,14 @@ class ZhatList extends GenericRowRenderer {
 		}
 		// this.cursor = 0
 	}
+
 	addButtons(pageButtons) {
 		const buttons = []
 		const navElement = document.createElement("nav")
 		const ulElement = document.createElement("ul")
 		ulElement.className = "pagination"
 		this.tableBody.parentElement.parentElement.prepend(ulElement)
-		pageButtons.forEach(buttonData => {
+		pageButtons.forEach((buttonData) => {
 			const changeNumber = buttonData[0]
 			const text = buttonData[1]
 			const liElement = document.createElement("li")
@@ -142,7 +156,8 @@ class ZhatList extends GenericRowRenderer {
 			buttonElement.className = "page-link"
 			buttonElement.href = "#"
 			buttonElement.innerText = text
-			buttonElement.onclick = (event) => { // what happens next isnt funny
+			buttonElement.onclick = (event) => {
+				// what happens next isnt funny
 				event.preventDefault()
 				const cursorDirection = buttonData[2]
 				let cursor
@@ -159,25 +174,28 @@ class ZhatList extends GenericRowRenderer {
 		})
 		return buttons
 	}
-	toggleButtonsDisabled(buttonIndex = this.buttons.map(v => false)) {
+
+	toggleButtonsDisabled(buttonIndex = this.buttons.map((v) => false)) {
 		buttonIndex.forEach((set, index) => {
 			this.buttons[index].disabled = set
 		})
 	}
+
 	clearAndShowZhrobber() {
 		this.currentData = []
 		this.tableBody.innerText = ""
 		// TODO: zhorbger ???
 		throw new Error("sorby, we don't have Zhroob")
 	}
+
 	static queryLabels(queryData) {
 		return fetch(`${service}/querylabels`, {
-			method: 'POST',
+			method: "POST",
 			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
+				Accept: "application/json",
+				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(queryData)
+			body: JSON.stringify(queryData),
 		})
 	}
 	static criticalSystemLabels = ["!hide", "!warn", "!takedown", "!no-unauthenticated"]
@@ -188,20 +206,27 @@ class ZhatList extends GenericRowRenderer {
 const zheList = new ZhatList(listElement)
 
 class LabelValueCount extends GenericRowRenderer {
+	/** */
 	constructor(listElement) {
 		super(listElement)
 		this.currentData = []
 		this.rows = ["val", "src", "count"]
-		this.buttons = this.addButtons([[-100, "Previous"], [100, "Next"]].reverse())
+		this.buttons = this.addButtons(
+			[
+				[-100, "Previous"],
+				[100, "Next"],
+			].reverse()
+		)
 		this.cursor = 0
 		this.resolvedDid = null
 	}
+
 	addButtons(pageButtons) {
 		const buttons = []
 		const ulElement = document.createElement("ul")
 		ulElement.className = "pagination"
 		this.tableBody.parentElement.parentElement.prepend(ulElement)
-		pageButtons.forEach(buttonData => {
+		pageButtons.forEach((buttonData) => {
 			const changeNumber = buttonData[0]
 			const text = buttonData[1]
 			const liElement = document.createElement("li")
@@ -221,29 +246,33 @@ class LabelValueCount extends GenericRowRenderer {
 		})
 		return buttons
 	}
+
 	fetchData(sourceDID, skip = 0) {
 		fetch(`${service}/labelcounts`, {
-			method: 'POST',
+			method: "POST",
 			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
+				Accept: "application/json",
+				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
 				src: sourceDID,
-				skip
-			})
-		}).then(response => {
-			response.json().then(response => {
-				this.populate(response.map(element => {
-					return {
-						count: element.count,
-						src: element._id.src,
-						val: element._id.val
-					}
-				}))
+				skip,
+			}),
+		}).then((response) => {
+			response.json().then((response) => {
+				this.populate(
+					response.map((element) => {
+						return {
+							count: element.count,
+							src: element._id.src,
+							val: element._id.val,
+						}
+					})
+				)
 			})
 		})
 	}
+
 	async updateQuery(field, data) {
 		if (field == "handle") {
 			if (data.startsWith("did:")) {
@@ -251,14 +280,18 @@ class LabelValueCount extends GenericRowRenderer {
 				this.fetchData(data)
 				return
 			}
-			handleResolver.resolve(data).then(did => {
-				this.resolvedDid = did
-				this.fetchData(did)
-			}).catch(err => {
-				this.resolvedDid = null
-			})
+			handleResolver
+				.resolve(data)
+				.then((did) => {
+					this.resolvedDid = did
+					this.fetchData(did)
+				})
+				.catch((err) => {
+					this.resolvedDid = null
+				})
 		}
 	}
+
 	populate(data) {
 		super.populate(data)
 		const rows = this.tableBody.querySelectorAll("tr")
@@ -288,6 +321,7 @@ const labelValueCount = new LabelValueCount(labelCountListElement)
 labelValueCount.fetchData()
 zheList.fetchData()
 class Control {
+	/** */
 	constructor() {
 		const radioButtons = document.querySelectorAll('input[name="account"]')
 		this.handleInput = document.getElementById("handle")
@@ -304,7 +338,7 @@ class Control {
 			zheList.updateQuery("valueFilter", this.value.trim())
 		}
 		for (const radioButton of radioButtons) {
-			radioButton.addEventListener('change', () => {
+			radioButton.addEventListener("change", () => {
 				if (radioButton.checked) {
 					zheList.updateQuery("accountMode", radioButton.value)
 					if (radioButton.value !== "labeler") {
