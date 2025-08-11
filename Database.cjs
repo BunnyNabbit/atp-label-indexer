@@ -70,9 +70,8 @@ class Database {
 
 	getLabelGroupCounts(src, val, limit = 100, skip = 0) {
 		const query = {}
-		if (src) query["_id.src"] = src
-		if (val) query["_id.val"] = val
-
+		if (typeof src === "string") query["_id.src"] = { $eq: src }
+		if (typeof val === "string") query["_id.val"] = { $eq: val }
 		return this.labelGroupCounts.find(query).sort({ count: -1 }).limit(limit).skip().toArray()
 	}
 
