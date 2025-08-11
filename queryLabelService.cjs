@@ -5,8 +5,8 @@ const http = require("http").Server(app)
 http.listen(port, function () {
 	console.log("listening on *: " + port.toString())
 })
-const mongojs = require("mongojs")
 const Database = require("./Database.cjs")
+const { ObjectId } = require("mongodb")
 const db = new Database("bsnetworkcache")
 db.db.on("error", (err) => {
 	console.error("Database error event", err)
@@ -39,7 +39,7 @@ app.post("/api/querylabels/", async (req, res) => {
 		const direction = req.body.cursorDirection
 		let sortDocument = { _id: -1 }
 		if (req.body.cursor && typeof req.body.cursor === "string" && req.body.cursor.length < 32 && req.body.cursorDirection) {
-			const cursor = new mongojs.ObjectID(req.body.cursor)
+			const cursor = new ObjectID(req.body.cursor)
 			if (direction == "lt") {
 				searchDocument._id = {
 					$lt: cursor,
