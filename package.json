@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "web": "node queryLabelService.cjs",
+    "web": "node scripts/web.cjs",
     "watch": "webpack --watch",
     "build": "webpack build --mode=production"
   },
@@ -36,7 +36,7 @@
     "bee-queue": "^1.7.1",
     "bootstrap": "^5.3.7",
     "express": "^4.21.2",
-    "mongojs": "^3.1.0"
+    "mongodb": "^6.18.0"
   },
   "type": "module"
 }

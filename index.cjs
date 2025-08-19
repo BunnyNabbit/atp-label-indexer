@@ -42,7 +42,7 @@ class LabelIndexer extends EventEmitter {
 			})
 			this.postQueue = new PostQueue(agent)
 		}
-		this.db = new Database(config.databaseName ?? "bsnetworkcache")
+		this.db = new Database(config)
 	}
 
 	async runIngester(handle) {

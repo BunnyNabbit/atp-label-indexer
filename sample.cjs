@@ -16,6 +16,7 @@ const indexer = new Indexer({
 	],
 	userAgent: "Label Indexer",
 	databaseName: "bsnetworkcache",
+	databaseConnectionString: "mongodb://localhost:27017"
 })
 const labelerHandles = ["moderation.bsky.app"]
 labelerHandles.forEach((labeler, index) => {
