@@ -12,6 +12,6 @@ Additionally, ensure that MongoDB is running on your local machine. You will nee
 
 To build the web interface from the command line: `npm run build`.
 
-Start the web interface + API with the following command: `npm run web`. The server will be running on port 6225.
+Start the web interface + API with the following command: `npm run web`. This will start a web server with a generic configuration. See `./scripts/web.cjs`.
 
 An example of an indexer and its configuration object is provided in `sample.cjs`.

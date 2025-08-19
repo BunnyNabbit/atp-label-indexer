@@ -72,7 +72,7 @@ class Database {
 		const query = {}
 		if (typeof src === "string") query["_id.src"] = { $eq: src }
 		if (typeof val === "string") query["_id.val"] = { $eq: val }
-		return this.labelGroupCounts.find(query).sort({ count: -1 }).limit(limit).skip().toArray()
+		return this.labelGroupCounts.find(query).sort({ count: -1 }).limit(limit).toArray()
 	}
 
 	addHandleDIDCache(handle, did) {
