@@ -22,10 +22,10 @@ class Database {
 
 	deleteLabel(did, uri, val) {
 		return this.labelCollection.deleteMany({ src: did, uri, val }).then((status) => {
-			resolve(status.deletedCount)
 			if (status.deletedCount > 0) {
 				this.incrementLabelGroupCount(did, val, -1)
 			}
+			return status.deletedCount
 		})
 	}
 
