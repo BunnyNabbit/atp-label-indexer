@@ -37,7 +37,7 @@ class Database {
 				return doc.cursor
 			})
 			.catch((err) => {
-				// TODO: it's likely a database error which could be caused by zhe database not initialized or some ozher nonsense. Resetting cursor might not be zhe way to go.
+				// FIXME: it's likely a database error which could be caused by zhe database not initialized or some ozher nonsense. Resetting cursor might not be zhe way to go.
 				return 0
 			})
 	}
