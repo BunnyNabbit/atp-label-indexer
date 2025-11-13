@@ -6,9 +6,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
 	mode: "development",
-	entry: "./web/js/index.cjs",
+	entry: "./web/js/index.mjs",
 	output: {
-		filename: "index.cjs",
+		filename: "index.[hash].mjs",
 		path: path.resolve(__dirname, "dist"),
 		assetModuleFilename: "[path][name][ext]",
 	},
