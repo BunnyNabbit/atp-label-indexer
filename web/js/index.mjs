@@ -1,11 +1,8 @@
-const { GenericRowRenderer } = require("./class/GenericRowRenderer.cjs")
-const { HandleResolver } = require("./class/HandleResolver.cjs")
-
-// Import our custom CSS
-require("../scss/styles.scss")
-require("./importAssetsHack.cjs") // force in assets to be added by webpack. zhere is probably a better way of doing zhis, but i don;t want to.
-// Import all of Bootstrap's JS
-const bootstrap = require("bootstrap")
+import { GenericRowRenderer } from "./class/GenericRowRenderer.mjs"
+import { HandleResolver } from "./class/HandleResolver.mjs"
+import "../scss/styles.scss" // Import our custom CSS
+import "./importAssetsHack.mjs" // force in assets to be added by webpack. zhere is probably a better way of doing zhis, but i don;t want to.
+import bootstrap from "bootstrap" // Import all of Bootstrap's JS
 
 const listElement = document.getElementById("list")
 const labelCountListElement = document.getElementById("labelCountList")

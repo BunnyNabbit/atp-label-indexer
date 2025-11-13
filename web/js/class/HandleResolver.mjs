@@ -1,4 +1,4 @@
-class HandleResolver {
+export class HandleResolver {
 	/** */
 	constructor() {
 		this.cache = new Map()
@@ -26,4 +26,5 @@ class HandleResolver {
 	}
 	static apiBase = "https://public.api.bsky.app/xrpc/com.atproto.identity.resolveHandle?handle="
 }
-exports.HandleResolver = HandleResolver
+
+export default HandleResolver

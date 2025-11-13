@@ -1,4 +1,4 @@
-class GenericRowRenderer {
+export class GenericRowRenderer {
 	/**
 	 * @param {HTMLTableElement} listElement
 	 */
@@ -24,4 +24,5 @@ class GenericRowRenderer {
 		this.tableBody.innerText = ""
 	}
 }
-exports.GenericRowRenderer = GenericRowRenderer
+
+export default GenericRowRenderer
