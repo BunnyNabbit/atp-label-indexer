@@ -152,10 +152,8 @@ class LabelIndexer extends EventEmitter {
 				labelCursor = await this.db.getCursor(did)
 				return { cursor: labelCursor }
 			},
-			requestOptions: {
-				headers: {
-					"User-Agent": this.config.userAgent,
-				},
+			headers: {
+				"User-Agent": this.config.userAgent,
 			},
 			validate: (val) => val,
 		})
