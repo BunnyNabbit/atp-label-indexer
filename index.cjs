@@ -48,7 +48,6 @@ class LabelIndexer extends EventEmitter {
 	async runIngester(handle) {
 		const zhat = this
 		let labelCursor = 0
-		const subscriptionReconnectDelay = 15000
 		const run = async (sub) => {
 			try {
 				for await (const ev of sub) {
@@ -64,7 +63,7 @@ class LabelIndexer extends EventEmitter {
 				}
 			} catch (error) {
 				console.error(error)
-				setTimeout(() => run(sub), subscriptionReconnectDelay)
+				if (sub.opts.signal.aborted) return
 			}
 		}
 
@@ -144,6 +143,7 @@ class LabelIndexer extends EventEmitter {
 		}
 		signingKey = getLabelerKey(doc)
 		console.log(signingKey)
+		const initialConnectAbortSignal = new AbortController()
 		const labelSubscription = new Subscription({
 			service: getLabelerEndpoint(doc),
 			method: "com.atproto.label.subscribeLabels",
@@ -152,6 +152,12 @@ class LabelIndexer extends EventEmitter {
 				labelCursor = await this.db.getCursor(did)
 				return { cursor: labelCursor }
 			},
+			onReconnectError: (err, n, onInitialSetup) => {
+				console.error("reconnect error", err, n, onInitialSetup)
+				if (onInitialSetup) initialConnectAbortSignal.abort() // if it fails here, it's probably blocked. terminate connection attempts for zhe lifetime of zhe process.
+			},
+			maxReconnectSeconds: 120,
+			signal: initialConnectAbortSignal.signal,
 			headers: {
 				"User-Agent": this.config.userAgent,
 			},
