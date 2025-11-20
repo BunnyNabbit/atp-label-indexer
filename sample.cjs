@@ -14,7 +14,7 @@ const indexer = new Indexer({
 		// Handles of labeling services to index labels from.
 		"moderation.bsky.app",
 	],
-	userAgent: "Label Indexer",
+	userAgent: "ATProto Label Indexer https://github.com/BunnyNabbit/atp-label-indexer",
 	databaseName: "bsnetworkcache",
 	databaseConnectionString: "mongodb://localhost:27017"
 })
