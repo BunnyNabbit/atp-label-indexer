@@ -30,7 +30,7 @@
     "@atproto/common": "~0.4.12",
     "@atproto/common-web": "~0.3.2",
     "@atproto/crypto": "~0.4.4",
-    "@atproto/identity": "~0.4.9",
+    "@atproto/identity": "~0.4.12",
     "@atproto/xrpc-server": "~0.5.3",
     "@popperjs/core": "^2.11.8",
     "bee-queue": "^1.7.1",
