@@ -26,7 +26,7 @@
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
-    "@atproto/api": "~0.12.29",
+    "@atproto/api": "~0.19.5",
     "@atproto/common": "~0.4.12",
     "@atproto/common-web": "~0.3.2",
     "@atproto/crypto": "~0.4.4",
